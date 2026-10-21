@@ -16,23 +16,29 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 For commercial licensing, please contact support@quantumnous.com
 */
+import { Link } from '@tanstack/react-router'
 import { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { PublicLayout } from '@/components/layout'
-import { Footer } from '@/components/layout/components/footer'
+import { ProjectAttribution } from '@/components/layout/components/footer'
 import { RichContent } from '@/components/rich-content'
+import { Button } from '@/components/ui/button'
 import { useTheme } from '@/context/theme-provider'
+import { useSystemConfig } from '@/hooks/use-system-config'
+import { DEFAULT_LOGO } from '@/lib/constants'
 import { isLikelyHtml } from '@/lib/content-format'
 import { useAuthStore } from '@/stores/auth-store'
 
-import { CTA, Features, Hero, HowItWorks, Stats } from './components'
 import { useHomePageContent } from './hooks'
+
+const HOME_LOGO = '/baichuan-logo.png'
 
 export function Home() {
   const { i18n, t } = useTranslation()
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const { resolvedTheme } = useTheme()
+  const systemConfig = useSystemConfig()
   const { auth } = useAuthStore()
   const isAuthenticated = !!auth.user
   const { content, isLoaded, isUrl } = useHomePageContent()
@@ -120,14 +126,35 @@ export function Home() {
     )
   }
 
+  const heroLogo =
+    systemConfig.logo && systemConfig.logo !== DEFAULT_LOGO
+      ? systemConfig.logo
+      : HOME_LOGO
+
   return (
-    <PublicLayout showMainContainer={false}>
-      <Hero isAuthenticated={isAuthenticated} />
-      <Stats />
-      <Features />
-      <HowItWorks />
-      <CTA isAuthenticated={isAuthenticated} />
-      <Footer />
-    </PublicLayout>
+    <div className='from-background via-background relative flex min-h-svh flex-col bg-gradient-to-b to-sky-50 dark:to-sky-950/30'>
+      <main className='flex flex-1 flex-col items-center justify-center gap-10 px-6 text-center'>
+        <img
+          src={heroLogo}
+          alt={systemConfig.systemName || t('Logo')}
+          className='size-24 rounded-3xl object-contain shadow-sm sm:size-28'
+        />
+        <h1 className='text-foreground text-3xl font-semibold tracking-[0.2em] sm:text-5xl'>
+          {t('All rivers flow to the sea, opening infinite possibilities')}
+        </h1>
+        {isAuthenticated ? (
+          <Button size='lg' className='px-10' render={<Link to='/dashboard' />}>
+            {t('Go to Dashboard')}
+          </Button>
+        ) : (
+          <Button size='lg' className='px-10' render={<Link to='/sign-in' />}>
+            {t('Sign In')}
+          </Button>
+        )}
+      </main>
+      <footer className='px-6 py-6 text-center text-xs'>
+        <ProjectAttribution currentYear={new Date().getFullYear()} inline />
+      </footer>
+    </div>
   )
 }

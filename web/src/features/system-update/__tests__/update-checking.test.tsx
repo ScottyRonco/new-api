@@ -186,12 +186,7 @@ describe('administrator update entry', () => {
     expect(
       within(dialog).queryByText('Last successful check')
     ).not.toBeInTheDocument()
-    expect(
-      within(dialog).getByRole('link', { name: 'Go to GitHub' })
-    ).toHaveAttribute(
-      'href',
-      'https://github.com/QuantumNous/new-api/releases/tag/v1.0.0-rc.36'
-    )
+    expect(within(dialog).queryByRole('link')).not.toBeInTheDocument()
     await user.keyboard('{Escape}')
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
@@ -256,9 +251,7 @@ describe('administrator update entry', () => {
       await user.click(trigger)
       const dialog = screen.getByRole('dialog')
       expect(within(dialog).getByText('Unknown version')).toBeInTheDocument()
-      expect(
-        await within(dialog).findByRole('link', { name: 'Go to GitHub' })
-      ).toBeInTheDocument()
+      expect(await within(dialog).findByText(release.body)).toBeInTheDocument()
       expect(
         within(dialog).queryByText('Unable to compare versions')
       ).not.toBeInTheDocument()
@@ -310,9 +303,7 @@ describe('administrator update entry', () => {
         expect.stringContaining('New version available')
       )
     }
-    expect(
-      within(dialog).getByRole('link', { name: 'Go to GitHub' })
-    ).toBeInTheDocument()
+    expect(within(dialog).getByText(release.body)).toBeInTheDocument()
     await user.keyboard('{Escape}')
     await waitFor(() =>
       expect(screen.queryByRole('dialog')).not.toBeInTheDocument()

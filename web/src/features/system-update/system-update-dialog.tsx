@@ -105,21 +105,6 @@ export function SystemUpdateDialog(props: SystemUpdateDialogProps) {
           >
             {update.checking ? t('Checking updates...') : t('Check again')}
           </Button>
-          {releaseUrl && (
-            <Button
-              nativeButton={false}
-              role='link'
-              render={
-                <a
-                  href={releaseUrl}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                />
-              }
-            >
-              {t('Go to GitHub')}
-            </Button>
-          )}
         </>
       }
     >
